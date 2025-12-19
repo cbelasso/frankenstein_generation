@@ -1,15 +1,15 @@
 """
-Alert detection facet.
+Alert detection task.
 
 Detects serious workplace concerns that require immediate attention.
 """
 
-from .facet import AlertsFacet
 from .model import AlertsOutput, AlertSpan
 from .prompt import alert_detection_prompt
+from .task import AlertsTask
 
 __all__ = [
-    "AlertsFacet",
+    "AlertsTask",
     "AlertsOutput",
     "AlertSpan",
     "alert_detection_prompt",

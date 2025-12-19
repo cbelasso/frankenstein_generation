@@ -1,7 +1,7 @@
 """
-Shared models for extraction output.
+Shared models for classification output.
 
-These models define the structure of extraction results across all facets.
+These models define the structure of extraction results across all classification tasks.
 """
 
 from datetime import datetime
@@ -15,19 +15,19 @@ class ExtractionMetadata(BaseModel):
 
     source: Literal["organic", "synthetic"] = "organic"
     processed_at: datetime = Field(default_factory=datetime.now)
-    facets_applied: List[str] = Field(default_factory=list)
+    tasks_applied: List[str] = Field(default_factory=list)
 
 
 class ExtractedText(BaseModel):
     """
-    A single text with all its extracted facet data.
+    A single text with all its extracted task data.
 
     This is the text-centric view of extraction results.
     """
 
     text_id: str
     original_text: str
-    facets: Dict[str, Any] = Field(default_factory=dict)
+    results: Dict[str, Any] = Field(default_factory=dict)
     metadata: ExtractionMetadata = Field(default_factory=ExtractionMetadata)
 
 
@@ -42,6 +42,19 @@ class ExtractionBatch(BaseModel):
     texts: List[ExtractedText] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.now)
 
+    def save(self, filepath: str) -> None:
+        """Save batch to JSON file."""
+        from pathlib import Path
+
+        Path(filepath).write_text(self.model_dump_json(indent=2))
+
+    @classmethod
+    def load(cls, filepath: str) -> "ExtractionBatch":
+        """Load batch from JSON file."""
+        from pathlib import Path
+
+        return cls.model_validate_json(Path(filepath).read_text())
+
 
 # --- Excerpt Bank Models (label-centric view) ---
 
@@ -55,7 +68,7 @@ class ExcerptReference(BaseModel):
 
     excerpt: str
     source_text_id: str
-    facet: str
+    task: str
     label: str
     reasoning: str = ""
     additional_fields: Dict[str, Any] = Field(default_factory=dict)
@@ -90,3 +103,16 @@ class ExcerptBank(BaseModel):
     def count_by_label(self) -> Dict[str, int]:
         """Get counts of excerpts per label."""
         return {label: len(excerpts) for label, excerpts in self.label_index.items()}
+
+    def save(self, filepath: str) -> None:
+        """Save bank to JSON file."""
+        from pathlib import Path
+
+        Path(filepath).write_text(self.model_dump_json(indent=2))
+
+    @classmethod
+    def load(cls, filepath: str) -> "ExcerptBank":
+        """Load bank from JSON file."""
+        from pathlib import Path
+
+        return cls.model_validate_json(Path(filepath).read_text())

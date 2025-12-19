@@ -1,15 +1,15 @@
 """
-Recommendation detection facet.
+Recommendation detection task.
 
 Extracts actionable suggestions and proposals from employee comments.
 """
 
-from .facet import RecommendationsFacet
 from .model import RecommendationsOutput, RecommendationSpan
 from .prompt import recommendations_detection_prompt
+from .task import RecommendationsTask
 
 __all__ = [
-    "RecommendationsFacet",
+    "RecommendationsTask",
     "RecommendationsOutput",
     "RecommendationSpan",
     "recommendations_detection_prompt",

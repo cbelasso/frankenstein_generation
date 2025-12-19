@@ -2,6 +2,6 @@
 Pipeline package for text processing and classification.
 """
 
-from . import capabilities
+from . import io, processors, tasks
 
-__all__ = ["capabilities"]
+__all__ = ["tasks", "io", "processors"]
