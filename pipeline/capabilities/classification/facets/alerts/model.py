@@ -1,9 +1,17 @@
+"""
+Alert detection models.
+
+Defines the schema for alert detection output.
+"""
+
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel
 
 
 class AlertSpan(BaseModel):
+    """A single detected alert span."""
+
     excerpt: str
     reasoning: str
     alert_type: Literal[
@@ -39,8 +47,10 @@ class AlertSpan(BaseModel):
 
 
 class AlertsOutput(BaseModel):
+    """Output schema for alert detection."""
+
     has_alerts: bool
-    alerts: List[AlertSpan]
+    alerts: List[AlertSpan] = []
     non_alert_classification: Optional[
         Literal[
             "performance_complaint",
